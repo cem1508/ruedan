@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hi</title>
+    <title>Narzissenmeer</title>
     <style>
         body {
             display: flex;
@@ -11,33 +11,143 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #ffebee;
-            font-family: Arial, sans-serif;
-            text-align: center;
+            background-color: #ff9800;
+            font-family: 'Arial', sans-serif;
             cursor: pointer;
+            overflow: hidden;
         }
-        h1 {
-            font-size: 3em;
-            color: #e91e63;
+
+        .wiese {
+            width: 100%;
+            height: 100%;
+            position: absolute;
         }
-        img {
-            max-width: 100%;
-            height: auto;
-            margin-top: 20px;
+
+        .blume {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            animation: flower-sway calc(8s + var(--anim-offset)) infinite alternate ease-in-out;
+            transform-origin: bottom center;
+        }
+
+        .blueten-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .bluetenblatt {
+            position: absolute;
+            width: 40px;
+            height: 80px;
+            background-color: var(--flower-color);
+            border-radius: 50% 50% 30% 30%;
+            transform-origin: bottom center;
+            left: 20px;
+            top: 0;
+            animation: 
+                petal-sway calc(4s + var(--anim-offset)) infinite alternate ease-in-out,
+                petal-rotate calc(6s + var(--anim-offset)) infinite alternate ease-in-out;
+        }
+
+        /* Animationen */
+        @keyframes flower-sway {
+            0%, 100% { transform: rotate(-5deg) scale(var(--scale)); }
+            50% { transform: rotate(5deg) scale(var(--scale)); }
+        }
+
+        @keyframes petal-sway {
+            0%, 100% { transform: rotate(var(--rot)) translateY(0px); }
+            50% { transform: rotate(var(--rot)) translateY(-5px); }
+        }
+
+        @keyframes petal-rotate {
+            0%, 100% { transform: rotate(var(--rot)) rotate(-8deg); }
+            50% { transform: rotate(var(--rot)) rotate(8deg); }
+        }
+
+        /* Text-Element */
+        .hinweis {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            font-size: 1.2em;
+            animation: text-pulse 3s infinite alternate;
+            z-index: 100;
+            background-color: rgba(255, 152, 0, 0.5);
+            padding: 10px 0;
+            backdrop-filter: blur(2px);
+        }
+
+        @keyframes text-pulse {
+            0% { opacity: 0.7; transform: translateY(0); }
+            100% { opacity: 1; transform: translateY(-5px); }
         }
     </style>
 </head>
 <body onclick="redirectToMainPage()">
-    <div>
-       
-        <img src="https://i.giphy.com/SLlDHukPmnkv4aGLsS.webp" alt="Romantic GIF">
-        <h1>Click anywhere</h1>
-        </div>
+    <div class="wiese" id="wiese"></div>
+    
+    <div class="hinweis">
+        Berühre die Narzissen
+    </div>
 
-        <script>
-            function redirectToMainPage(){
-                window.location.href = "infoPage.html";
+    <script>
+        function createFlowers() {
+            const wiese = document.getElementById('wiese');
+            const gelbToene = [
+                '#ffeb3b', '#fff59d', '#fff176', '#ffd54f', 
+                '#ffca28', '#ffc107', '#ffb300', '#ffa000'
+            ];
+            
+            // 60 animierte Narzissen erstellen
+            for (let i = 0; i < 60; i++) {
+                const blume = document.createElement('div');
+                blume.className = 'blume';
+                
+                // Zufällige Eigenschaften
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const scale = (Math.random() * 0.7 + 0.5).toFixed(2);
+                const animOffset = (Math.random() * 5).toFixed(2) + 's';
+                const color = gelbToene[Math.floor(Math.random() * gelbToene.length)];
+                
+                // CSS Variablen setzen
+                blume.style.setProperty('--scale', scale);
+                blume.style.setProperty('--anim-offset', animOffset);
+                blume.style.left = `${left}%`;
+                blume.style.top = `${top}%`;
+                
+                // Blütenblätter erstellen
+                const container = document.createElement('div');
+                container.className = 'blueten-container';
+                
+                for (let j = 0; j < 6; j++) {
+                    const blatt = document.createElement('div');
+                    blatt.className = 'bluetenblatt';
+                    const rotation = j * 60;
+                    blatt.style.setProperty('--rot', `${rotation}deg`);
+                    blatt.style.setProperty('--flower-color', color);
+                    blatt.style.animationDelay = `-${j * 0.3}s`;
+                    container.appendChild(blatt);
+                }
+                
+                blume.appendChild(container);
+                wiese.appendChild(blume);
             }
-        </script>
+        }
+        
+        window.onload = createFlowers;
+    </script>
+
+    <script>
+        function redirectToMainPage() {
+            window.location.href = "infoPage.html";
+        }
+    </script>
 </body>
 </html>
