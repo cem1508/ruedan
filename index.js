@@ -1,20 +1,135 @@
-function openEnvelope() {
-    const envelope = document.querySelector('.envelope');
-    envelope.classList.add('open');
-
-    const heartsContainer = document.querySelector('.hearts-container');
-
-    function createHeart() {
-        const heart = document.createElement('div');
-        heart.classList.add('heart');
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.animationDuration = Math.random() * 2 + 3 + 's';
-        heartsContainer.appendChild(heart);
-
-        setTimeout(() => {
-            heart.remove();
-        }, 5000);
+const phrases = [
+    "versuchs nochmal",
+    "bist du dir sicher?",
+    "sicher sicher?",
+    "fang mich",
+    "tu mir das nicht an :(",
+    "im fast as fuck boiiii",
+  ];
+  
+  let noCount = 0;
+  let speed = 1000;
+  let moveInterval;
+  
+  //const noButton = document.getElementById('noButton');
+  //noButton.style.position = 'absolute';
+  
+  function handleNoClick(){
+    const noButton = document.getElementById('noButton');
+    const responseMessage = document.getElementById('responseMessage');
+  
+    noButton.textContent = phrases[Math.min(noCount, phrases.length - 1)];
+  
+  
+  
+    // const buttonWidth = noButton.offsetWidth;
+    // const buttonHeight = noButton.offsetHeight;
+  
+    // const maxX = window.innerWidth - buttonWidth;
+    // const maxY = window.innerHeight - buttonHeight;
+  
+    // const randomX = Math.random() * maxX;
+    // const randomY = Math.random() * maxY;
+  
+    // noButton.style.position = 'absolute';
+    // noButton.style.left = randomX + 'px';
+    // noButton.style.top = randomY + "px";
+  
+  
+    // responseMessage.textContent = phrases[Math.min(noCount, phrases.length - 1)];
+    
+    sendAnswer("Nein");
+  
+    noCount++;
+  
+    speed = Math.max(100, speed - 100); //mindest geschwindigkeit 100ms
+  
+   
+  
+    startMovingButton();
+  
+    if(noCount >= phrase.length){
+      noCount = 0;
     }
-
-    setInterval(createHeart, 300);
-}
+  
+  }
+  
+  function startMovingButton(){
+    const noButton = document.getElementById('noButton');
+  
+     // sanfte Animation
+     noButton.style.transition = `left ${speed / 1000}s ease-in-out, top ${speed / 1000}s ease-in-out`;
+  
+    // vorheriges Intervall stoppen
+    if(moveInterval){
+      clearInterval(moveInterval);
+    }
+  
+    // neues Intervall starten
+    moveInterval = setInterval(() => {
+      const buttonWidth = noButton.offsetWidth;
+      const buttonHeight = noButton.offsetHeight;
+  
+      const maxX = window.innerWidth - buttonWidth;
+      const maxY = window.innerHeight - buttonHeight;
+  
+      const randomX = Math.random() * maxX;
+      const randomY = Math.random() * maxY;
+  
+      
+  
+      noButton.style.position = 'absolute';
+      noButton.style.left = randomX + 'px';
+      noButton.style.top = randomY + "px";
+    }, speed);
+  
+  }
+  
+  
+  function sendAnswer(response) {
+    const formUrl = "https://docs.google.com/forms/u/0/d/e/1FAIpQLScskC2H2SgeODQPsUqZePyt7MU3_gMV4ShiStYOT024vK2Z-g/formResponse";
+    const entryID = "entry.789271533"; // Ersetze mit der korrekten Feld-ID
+  
+    // Formulardaten erstellen
+    const formData = new FormData();
+    formData.append(entryID, response);
+  
+    // Daten an Google Form senden
+    fetch(formUrl, {
+        method: "POST",
+        mode: "no-cors",
+        body: formData
+    }).then(() => {
+        document.getElementById("responseMessage").innerText = "";
+    }).catch(error => console.error("Fehler beim Senden:", error));
+  
+    // Confetti-Animation auslösen, wenn "Ja" geklickt wird
+    if (response === 'Ja') {
+      confetti({
+        particleCount: 500, // Viel mehr Partikel
+        spread: 120, // Größere Streuung
+        origin: { y: 0.6 },
+        colors: ['#ff3b30', '#007aff', '#34c759', '#ffcc00', '#5856d6', '#af52de', '#ff2d55'], // Mehr Farben
+        shapes: ['circle', 'square'], // Beide Formen
+        gravity: 0.4, // Langsamere Partikel
+        ticks: 300 // Längere Lebensdauer
+      });
+  
+      // Pause einbauen und letzte Seite anzeigen
+      setTimeout(() => {
+        // Hauptseite ausblenden
+        document.querySelector('.container').style.display = 'none';
+  
+        // Letzte Seite einblenden
+        document.getElementById('finalPage').style.display = 'block';
+  
+         // Karte einblenden
+         document.getElementById('mapContainer').style.display = 'block';
+      }, 3000); // 3 Sekunden Pause
+    }
+  
+    // Bewegung stoppen, wenn "Ja" geklickt wird
+    if (response === 'Ja' && moveInterval) {
+      clearInterval(moveInterval);
+    }
+  }

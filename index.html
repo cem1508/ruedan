@@ -3,18 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentinstag Brief</title>
-    <link rel="stylesheet" href="index.css">
+    <title>Hi</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffebee;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            cursor: pointer;
+        }
+        h1 {
+            font-size: 3em;
+            color: #e91e63;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+    </style>
 </head>
-<body>
-    <div class="envelope" onclick="openEnvelope()">
-        <div class="flap"></div>
-        <div class="body"></div>
-        <div class="message inside">
-            Alles Liebe zum Valentinstag! 💖
-            <div class="hearts-container"></div>
+<body onclick="redirectToMainPage()">
+    <div>
+       
+        <img src="https://i.giphy.com/SLlDHukPmnkv4aGLsS.webp" alt="Romantic GIF">
+        <h1>Click anywhere</h1>
         </div>
-    </div>
-    <script src="index.js"></script>
+
+        <script>
+            function redirectToMainPage(){
+                window.location.href = "infoPage.html";
+            }
+        </script>
 </body>
 </html>
